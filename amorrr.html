@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watss ❤️ Emmy</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;400;600;700&family=Dancing+Script:wght@700&family=Great+Vibes&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden;
+        }
+
+        /* PANTALLA INICIAL */
+        .start-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 25%, #7e22ce 75%, #db2777 100%);
+            background-size: 400% 400%;
+            animation: gradientMove 15s ease infinite;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 0.5s ease;
+        }
+
+        @keyframes gradientMove {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .start-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .floating-hearts-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .bg-heart {
+            position: absolute;
+            font-size: 40px;
+            opacity: 0.15;
+            animation: floatUp 15s infinite;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) rotate(0deg); }
+            100% { transform: translateY(-100vh) rotate(360deg); }
+        }
+
+        .start-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+        }
+
+        .start-title {
+            font-family: 'Pacifico', cursive;
+            font-size: 64px;
+            color: white;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.6),
+                         0 0 60px rgba(219, 39, 119, 0.5),
+                         0 6px 12px rgba(0, 0, 0, 0.4);
+            margin-bottom: 25px;
+            animation: pulse 2s infinite;
+            letter-spacing: 3px;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .start-subtitle {
+            font-family: 'Poppins', sans-serif;
+            font-size: 24px;
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.95);
+            margin-bottom: 50px;
+            text-align: center;
+            padding: 0 20px;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .start-button {
+            padding: 22px 60px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 28px;
+            font-weight: 600;
+            background: linear-gradient(135deg, #db2777, #9333ea, #3b82f6);
+            background-size: 200% 200%;
+            animation: gradientShift 3s ease infinite, bounce 2s infinite;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50px;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 15px 40px rgba(219, 39, 119, 0.6),
+                        0 0 30px rgba(147, 51, 234, 0.4);
+            transition: all 0.3s ease;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .start-button:hover {
+            transform: scale(1.1) translateY(-5px);
+            box-shadow: 0 20px 50px rgba(219, 39, 119, 0.8),
+                        0 0 40px rgba(147, 51, 234, 0.6);
+        }
+
+        /* PANTALLA PRINCIPAL */
+        .main-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background-image: url("1920-x-1080-hd-1qq8r4pnn8cmcew4(1).jpg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 1.5s ease;
+        }
+
+        .main-screen.active {
+            display: flex;
+        }
+
+        .main-screen.visible {
+            opacity: 1;
+        }
+
+        /* Overlay con gradiente azul marino y blanco */
+        .main-screen::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, 
+                rgba(15, 23, 42, 0.4), 
+                rgba(30, 60, 114, 0.4), 
+                rgba(255, 255, 255, 0.2),
+                rgba(219, 39, 119, 0.3),
+                rgba(147, 51, 234, 0.3));
+            background-size: 400% 400%;
+            animation: gradientShift 20s ease infinite;
+            pointer-events: none;
+        }
+
+        /* Partículas flotantes */
+        .particle {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.9), rgba(219, 39, 119, 0.5));
+            border-radius: 50%;
+            animation: float 10s infinite;
+            pointer-events: none;
+            z-index: 1;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) translateX(50px); opacity: 0; }
+        }
+
+        /* Contenedor principal */
+        .main-content {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: zoomIn 2s ease-out;
+        }
+
+        @keyframes zoomIn {
+            0% { transform: scale(0) rotate(-180deg); opacity: 0; }
+            60% { transform: scale(1.15) rotate(10deg); }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+
+        .container {
+            position: relative;
+            filter: drop-shadow(0 0 50px rgba(255, 255, 255, 0.6))
+                    drop-shadow(0 0 80px rgba(219, 39, 119, 0.6));
+            margin-bottom: 40px;
+        }
+
+        /* CORAZÓN MEJORADO */
+        @keyframes heartbeat {
+            0% { transform: scale(1); filter: brightness(1); }
+            15% { transform: scale(1.2); filter: brightness(1.3); }
+            30% { transform: scale(1); filter: brightness(1); }
+            45% { transform: scale(1.25); filter: brightness(1.4); }
+            60% { transform: scale(1); filter: brightness(1); }
+            100% { transform: scale(1); filter: brightness(1); }
+        }
+
+        .heart {
+            position: relative;
+            width: 220px;
+            height: 200px;
+            animation: heartbeat 1.5s infinite;
+            filter: drop-shadow(0 0 30px rgba(255, 255, 255, 0.8));
+        }
+
+        .heart:before,
+        .heart:after {
+            position: absolute;
+            content: "";
+            left: 110px;
+            top: 0;
+            width: 110px;
+            height: 176px;
+            background: linear-gradient(135deg, #ffffff, #f472b6, #db2777, #be185d);
+            background-size: 300% 300%;
+            animation: gradientMove 4s ease infinite;
+            border-radius: 110px 110px 0 0;
+            transform: rotate(-45deg);
+            transform-origin: 0 100%;
+            box-shadow: inset 0 0 40px rgba(255, 255, 255, 0.5),
+                        0 0 30px rgba(255, 255, 255, 0.6);
+        }
+
+        .heart:after {
+            left: 0;
+            transform: rotate(45deg);
+            transform-origin: 100% 100%;
+        }
+
+        .heart::before {
+            animation: gradientMove 4s ease infinite, heartPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes heartPulse {
+            0%, 100% { box-shadow: inset 0 0 40px rgba(255, 255, 255, 0.5), 0 0 30px rgba(255, 255, 255, 0.6); }
+            50% { box-shadow: inset 0 0 60px rgba(255, 255, 255, 0.8), 0 0 50px rgba(219, 39, 119, 0.8); }
+        }
+
+        .heart span {
+            position: absolute;
+            top: 42%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-family: 'Great Vibes', cursive;
+            font-size: 38px;
+            font-weight: 700;
+            text-align: center;
+            z-index: 1;
+            text-shadow: 0 0 20px rgba(30, 60, 114, 0.9), 
+                         0 0 40px rgba(219, 39, 119, 0.8),
+                         0 4px 8px rgba(0, 0, 0, 0.6);
+            animation: textGlow 2s ease-in-out infinite;
+            letter-spacing: 3px;
+        }
+
+        @keyframes textGlow {
+            0%, 100% { 
+                text-shadow: 0 0 20px rgba(30, 60, 114, 0.9), 
+                             0 0 40px rgba(219, 39, 119, 0.8),
+                             0 4px 8px rgba(0, 0, 0, 0.6);
+            }
+            50% { 
+                text-shadow: 0 0 30px rgba(255, 255, 255, 1), 
+                             0 0 60px rgba(219, 39, 119, 1),
+                             0 0 80px rgba(30, 60, 114, 0.8),
+                             0 6px 12px rgba(0, 0, 0, 0.8);
+            }
+        }
+
+        /* TEXTO "TE AMO" */
+        .love-message {
+            text-align: center;
+            animation: fadeInScale 2s ease-out 0.5s both;
+        }
+
+        @keyframes fadeInScale {
+            0% { opacity: 0; transform: scale(0.5); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        .love-text {
+            font-family: 'Great Vibes', cursive;
+            font-size: 72px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffffff, #f472b6, #db2777, #1e3c72);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            background-size: 300% 300%;
+            animation: gradientMove 5s ease infinite, floatText 3s ease-in-out infinite;
+            filter: drop-shadow(0 0 30px rgba(255, 255, 255, 0.8))
+                    drop-shadow(0 0 40px rgba(219, 39, 119, 0.6))
+                    drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
+            letter-spacing: 8px;
+            margin-bottom: 15px;
+        }
+
+        @keyframes floatText {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .love-subtext {
+            font-family: 'Poppins', sans-serif;
+            font-size: 36px;
+            font-weight: 600;
+            background: linear-gradient(135deg, #ffffff, #db2777, #1e3c72);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            background-size: 200% 200%;
+            animation: gradientShift 4s ease infinite, pulse 2s ease-in-out infinite;
+            filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.8))
+                    drop-shadow(0 0 40px rgba(219, 39, 119, 0.6))
+                    drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));
+            letter-spacing: 6px;
+        }
+
+        /* Corazones cayendo */
+        .falling-heart {
+            position: absolute;
+            font-size: 35px;
+            animation: fall linear infinite;
+            pointer-events: none;
+            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.8));
+        }
+
+        @keyframes fall {
+            0% { 
+                top: -50px; 
+                opacity: 1; 
+                transform: rotate(0deg) scale(1);
+            }
+            50% {
+                transform: rotate(180deg) scale(1.3);
+            }
+            100% { 
+                top: 100vh; 
+                opacity: 0;
+                transform: rotate(360deg) scale(0.7);
+            }
+        }
+
+        /* Botones */
+        .play-button {
+            position: fixed;
+            bottom: 70px;
+            right: 20px;
+            padding: 18px 30px;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #1e3c72, #db2777, #ffffff);
+            background-size: 200% 200%;
+            animation: gradientShift 3s ease infinite;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 30px;
+            color: white;
+            font-weight: 600;
+            font-size: 18px;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(30, 60, 114, 0.5),
+                        0 0 30px rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+            z-index: 10;
+            letter-spacing: 1px;
+        }
+
+        .play-button:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 12px 30px rgba(30, 60, 114, 0.7),
+                        0 0 40px rgba(255, 255, 255, 0.5);
+        }
+
+        .volume-control {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 140px;
+            height: 10px;
+            border-radius: 5px;
+            outline: none;
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+            cursor: pointer;
+            z-index: 10;
+            border: 1px solid rgba(30, 60, 114, 0.3);
+        }
+
+        .volume-control::-webkit-slider-thumb {
+            appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ffffff, #1e3c72);
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.8),
+                        0 0 25px rgba(30, 60, 114, 0.5);
+        }
+
+        .volume-control::-moz-range-thumb {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ffffff, #1e3c72);
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+        }
+
+        /* Estrellas */
+        .star {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+            pointer-events: none;
+            box-shadow: 0 0 8px rgba(255, 255, 255, 1),
+                        0 0 12px rgba(30, 60, 114, 0.5);
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.8); }
+        }
+    </style>
+</head>
+<body>
+    <!-- PANTALLA INICIAL -->
+    <div class="start-screen" id="startScreen">
+        <div class="floating-hearts-bg" id="floatingHeartsBg"></div>
+        <div class="start-content">
+            <div class="start-title">💝 Para Emmy 💝</div>
+            <div class="start-subtitle">✨ Haz clic para descubrir tu sorpresa ✨</div>
+            <button class="start-button" onclick="showMainScreen()">Empezar</button>
+        </div>
+    </div>
+
+    <!-- PANTALLA PRINCIPAL -->
+    <div class="main-screen" id="mainScreen">
+        <div class="main-content">
+            <div class="container">
+                <div class="heart">
+                    <span>Watss<br>+<br>Emmy</span>
+                </div>
+            </div>
+            <div class="love-message">
+                <div class="love-text">Te Amo</div>
+                <div class="love-subtext">Mucho, Mucho ❤️</div>
+            </div>
+        </div>
+    </div>
+
+    <audio id="music" loop>
+        <source src="crismj.mp3" type="audio/mpeg">
+    </audio>
+
+    <button class="play-button" onclick="document.getElementById('music').play()" style="display: none;" id="playButton">
+        ▶️ Música
+    </button>
+
+    <input type="range" 
+           class="volume-control"
+           id="volumeControl"
+           style="display: none;"
+           min="0" 
+           max="1" 
+           step="0.01" 
+           value="0.3"
+           oninput="document.getElementById('music').volume = this.value">
+
+    <script>
+        const startScreen = document.getElementById('startScreen');
+        const mainScreen = document.getElementById('mainScreen');
+        const playButton = document.getElementById('playButton');
+        const volumeControl = document.getElementById('volumeControl');
+        const music = document.getElementById('music');
+        music.volume = 0.3;
+
+        // Crear corazones flotantes de fondo
+        function createBgHearts() {
+            const container = document.getElementById('floatingHeartsBg');
+            for (let i = 0; i < 15; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'bg-heart';
+                heart.innerHTML = '💖';
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.animationDelay = Math.random() * 15 + 's';
+                heart.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                container.appendChild(heart);
+            }
+        }
+
+        createBgHearts();
+
+        function showMainScreen() {
+            startScreen.classList.add('hidden');
+            setTimeout(() => {
+                startScreen.style.display = 'none';
+                mainScreen.classList.add('active');
+                setTimeout(() => {
+                    mainScreen.classList.add('visible');
+                    createParticles();
+                    createStars();
+                    setInterval(createFallingHeart, 600);
+                    playButton.style.display = 'block';
+                    volumeControl.style.display = 'block';
+                    music.play().catch(e => console.log('Audio:', e));
+                }, 100);
+            }, 500);
+        }
+
+        function createParticles() {
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * window.innerWidth + 'px';
+                particle.style.animationDelay = Math.random() * 10 + 's';
+                particle.style.animationDuration = (Math.random() * 5 + 5) + 's';
+                mainScreen.appendChild(particle);
+            }
+        }
+
+        function createStars() {
+            for (let i = 0; i < 50; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * window.innerWidth + 'px';
+                star.style.top = Math.random() * window.innerHeight + 'px';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                mainScreen.appendChild(star);
+            }
+        }
+
+        function createFallingHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'falling-heart';
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * window.innerWidth + 'px';
+            heart.style.animationDuration = (Math.random() * 3 + 3) + 's';
+            mainScreen.appendChild(heart);
+            setTimeout(() => heart.remove(), 6000);
+        }
+    </script>
+</body>
+</html>
